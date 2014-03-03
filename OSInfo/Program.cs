@@ -222,17 +222,16 @@ namespace Lab
             string[] drives = Environment.GetLogicalDrives();
 
             Console.WriteLine("**********Drives info**********");
-            ManagementObjectSearcher searcher2 = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_DiskDrive");
+            ManagementObjectSearcher driveSearcher = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_DiskDrive");
             Console.WriteLine("Physical drives info:");
 
-            foreach (ManagementObject queryObj in searcher2.Get())
+            foreach (ManagementObject curDrive in driveSearcher.Get())
             {
-                Console.WriteLine("\tDevice ID: {0};\n\tInterface type: {1};\n\tManufacturer: {2};\n\tModel: {3};\n\tSerial number: {4};\n\tSize: {5} Gb", queryObj["DeviceID"],
-                queryObj["InterfaceType"],
-                queryObj["Manufacturer"],
-                queryObj["Model"],
-                queryObj["SerialNumber"],
-                Math.Round(System.Convert.ToDouble(queryObj["Size"]) / 1024 / 1024 / 1024, 2));
+                Console.WriteLine("\tDevice ID: {0}",curDrive["DeviceID"]);
+                Console.WriteLine("\tInterface type: {0}", curDrive["InterfaceType"]);
+                Console.WriteLine("\tManufacturer: {0}", curDrive["Manufacturer"]);
+                Console.WriteLine("\tModel: {0}", curDrive["Model"]);
+                Console.WriteLine("\tSize: {0} GB",Math.Round(System.Convert.ToDouble(curDrive["Size"]) / 1024 / 1024 / 1024, 2));
             }
             Console.WriteLine();
             Console.WriteLine("Logical drives list: " + string.Join(", ", drives));
@@ -244,12 +243,12 @@ namespace Lab
 
                 if (info.IsReady)
                 {
-                    Console.WriteLine("\t" + drives[i] + " - " + Math.Round((double)info.TotalSize / 1024 / 1024 / 1024, 2) + " GB (" + DriveTypeToString(info.DriveType) + ")");
+                    Console.WriteLine("\t{0} - {1} GB ({2})", drives[i], Math.Round((double)info.TotalSize / 1024 / 1024 / 1024, 2), DriveTypeToString(info.DriveType));
                 }
             }
             Console.WriteLine();
         }
-  
+        
         static void Main(string[] args)
         {
             OutputGeneralInfo();
